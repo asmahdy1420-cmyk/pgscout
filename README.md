@@ -1,5 +1,7 @@
 # pgscout
 
+![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white) ![MCP](https://img.shields.io/badge/MCP-server-000000) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-read--only-4169E1?logo=postgresql&logoColor=white) ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+
 A Model Context Protocol (MCP) server that gives agents **safe, read-only insight into a PostgreSQL database**: schema discovery, guarded queries, `EXPLAIN` summaries and index suggestions, all behind one policy layer with an audit trail.
 
 The MCP stdio transport (JSON-RPC 2.0, newline-delimited) is implemented directly in under 200 lines, so the server has a single runtime dependency (`psycopg`) and no SDK to track.
