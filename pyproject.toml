@@ -1,0 +1,59 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pgscout"
+version = "0.1.0"
+description = "A read-only PostgreSQL inspection server for MCP clients: schema discovery, guarded queries, EXPLAIN summaries and index hints."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Ahmed Mahdy", email = "mahdy@progma.tech" }]
+requires-python = ">=3.11"
+dependencies = ["psycopg[binary]>=3.1"]
+keywords = ["mcp", "model-context-protocol", "postgresql", "agents", "json-rpc", "read-only"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Database",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[project.scripts]
+pgscout = "pgscout.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pgscout"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 120
+src = ["src", "tests"]
+# The package targets 3.11+, but lint against 3.9 so the code also runs on
+# older interpreters (no match statements, no runtime X | Y unions).
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "S"]
+ignore = [
+    "S101",  # assert is used for internal invariants and in tests
+    "S608",  # SQL is built from guarded statements and catalog constants, never raw input
+    "UP007", # keep Optional[...] readable on 3.9
+    "UP045",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S", "E501"]
+"src/pgscout/fake.py" = ["E501"]
