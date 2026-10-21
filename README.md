@@ -1,10 +1,26 @@
 # pgscout
 
-![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white) ![MCP](https://img.shields.io/badge/MCP-server-000000) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-read--only-4169E1?logo=postgresql&logoColor=white) ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 A Model Context Protocol (MCP) server that gives agents **safe, read-only insight into a PostgreSQL database**: schema discovery, guarded queries, `EXPLAIN` summaries and index suggestions, all behind one policy layer with an audit trail.
 
 The MCP stdio transport (JSON-RPC 2.0, newline-delimited) is implemented directly in under 200 lines, so the server has a single runtime dependency (`psycopg`) and no SDK to track.
+
+## Screenshots
+
+Captured from a real run against a throwaway PostgreSQL 16 container with a small sample schema (`shop` and `internal`, generated rows, not production data). Each image is the output of the real server, pretty-printed.
+
+![Guarded SQL](docs/screenshots/guarded-sql-allowed-and-refused.png)
+
+An aggregate `SELECT` is allowed. A `DELETE`, a second statement after `;`, and a table in a schema outside the allowlist are all refused with a reason.
+
+![Column redaction](docs/screenshots/column-redaction.png)
+
+Naming `password_hash` is refused. `SELECT *` runs, with that column replaced by `[REDACTED]`.
+
+![Index suggestion](docs/screenshots/index-suggestion.png)
+
+`suggest_indexes` on a filtered query: the `EXPLAIN` summary shows a sequential scan, and the tool returns ready-made `CREATE INDEX CONCURRENTLY` statements without running them.
 
 ## Why
 
